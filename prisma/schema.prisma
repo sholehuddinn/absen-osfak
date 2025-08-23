@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id     Int     @id @default(autoincrement())
+  nim    String  @unique
+  name   String
+  role   Role    @default(PARTICIPANT)
+
+  participants Absence[] @relation("PicParticipants")
+  absences     Absence[] @relation("ParticipantAbsence")
+}
+
+model Absence {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  picId Int
+  pic   User @relation("PicParticipants", fields: [picId], references: [id])
+
+  participantId Int
+  participant   User @relation("ParticipantAbsence", fields: [participantId], references: [id])
+}
+
+enum Role {
+  PIC
+  PARTICIPANT
+}
