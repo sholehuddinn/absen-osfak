@@ -52,3 +52,37 @@ export async function DELETE(req, { params }) {
     );
   }
 }
+
+export async function PUT(req, { params }) {
+  try {
+    const { nim } = params;
+    const body = await req.json();
+
+    const { name, role, prodi } = body; 
+
+    const user = await prisma.user.update({
+      where: { nim },
+      data: {
+        ...(name && { name }),
+        ...(role && { role }),
+        ...(prodi && { prodi }),
+      },
+    });
+
+    return Response.json(
+      { message: "User updated successfully", user },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(error);
+
+    if (error.code === "P2025") {
+      return Response.json({ error: "User not found" }, { status: 404 });
+    }
+
+    return Response.json(
+      { error: "Failed to update user" },
+      { status: 500 }
+    );
+  }
+}

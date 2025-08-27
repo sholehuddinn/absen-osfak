@@ -17,8 +17,26 @@ export async function POST(req) {
     const body = await req.json();
     const { nim, name, role } = body;
 
+    const kodeJurusan = nim.substring(6, 8); 
+
+    let prodi = "";
+    switch (kodeJurusan) {
+      case "41":
+        prodi = "Teknik Sipil";
+        break;
+      case "42":
+        prodi = "Teknik Informatika";
+        break;
+      case "43":
+        prodi = "Teknik Geomatika";
+        break;
+      default:
+        prodi = "Tidak Diketahui"; 
+        break;
+    }
+
     const user = await prisma.user.create({
-      data: { nim, name, role },
+      data: { nim, name, role, prodi },
     });
 
     return Response.json(user, { status: 201 });

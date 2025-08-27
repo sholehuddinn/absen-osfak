@@ -13,6 +13,7 @@ model User {
   nim    String  @unique
   name   String
   role   Role    @default(PARTICIPANT)
+  prodi  String  @default("")
 
   participants Absence[] @relation("PicParticipants")
   absences     Absence[] @relation("ParticipantAbsence")
