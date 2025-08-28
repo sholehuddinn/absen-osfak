@@ -9,14 +9,16 @@ datasource db {
 }
 
 model User {
-  id     Int     @id @default(autoincrement())
-  nim    String  @unique
-  name   String
-  role   Role    @default(PARTICIPANT)
-  prodi  String  @default("")
+  id    Int    @id @default(autoincrement())
+  nim   String @unique
+  name  String
+  role  Role   @default(PARTICIPANT)
+  prodi String @default("")
 
-  participants Absence[] @relation("PicParticipants")
-  absences     Absence[] @relation("ParticipantAbsence")
+  participants   Absence[]        @relation("PicParticipants")
+  absences       Absence[]        @relation("ParticipantAbsence")
+  Tim            Tim[]
+  TimParticipant TimParticipant[]
 }
 
 model Absence {
@@ -33,4 +35,25 @@ model Absence {
 enum Role {
   PIC
   PARTICIPANT
+}
+
+model Tim {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  picId Int
+  pic   User @relation(fields: [picId], references: [id])
+
+  participants TimParticipant[]
+}
+
+model TimParticipant {
+  id     Int @id @default(autoincrement())
+  timId  Int
+  userId Int
+
+  tim  Tim  @relation(fields: [timId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([timId, userId])
 }
